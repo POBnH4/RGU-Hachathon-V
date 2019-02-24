@@ -26,24 +26,7 @@ public class Main {
     	};
     	java.awt.EventQueue.invokeLater(runGUI);
 
-        //Heap maxHeap = new Heap(4);
-        //maxHeap.print();
-        loadDataCleanRecipes();
-        //printData();
-        List<String> userInput = new ArrayList<>();
-        userInput.add("red cabbage");
-        userInput.add("carrot");
-        userInput.add("tomato");
-        userInput.add("red onion");
-        String[] optimized = optimize(checkForOccurrences(userInput), userInput);
-        //printTwo(checkForOccurrences(list));
-        HashMap<String,String[]> newRecipe = new HashMap<>();
-        try {
-            newRecipe.put(printNewRecipe(optimized), (String[]) userInput.toArray());
-        }catch (ClassCastException e){
-           // e.printStackTrace();
-        }
-        saveToDatabase("",newRecipe); //TODO ask user for name;
+        
     }
 
     private static void createAndShowGUI()
@@ -52,6 +35,44 @@ public class Main {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.initGUI(); // initialise AdminGUI
         f.setVisible(true); // make frame visible
+    }
+    
+    private static String[] callBackEnd(String inputString)
+    {
+    	//Heap maxHeap = new Heap(4);
+        //maxHeap.print();
+        loadDataCleanRecipes();
+        //printData();
+        String[] temp = inputString.split(",");
+        List<String> userInput = new ArrayList<>(Arrays.asList(temp));
+        String[] uInput = (String[]) userInput.toArray();
+        //userInput.add("red cabbage");
+        //userInput.add("carrot");
+        //userInput.add("tomato");
+        //userInput.add("red onion");
+        String[] optimized = optimize(checkForOccurrences(userInput), userInput);
+        //printTwo(checkForOccurrences(list));
+        HashMap<String,String[]> newRecipe = new HashMap<>();
+        String y = printNewRecipe(optimized);
+        try {
+            newRecipe.put(y, uInput);
+            saveToDatabase("",newRecipe); //TODO ask user for name; 
+        }catch (ClassCastException e){
+           // e.printStackTrace();
+        }
+        final String[] finalResult = new String[2]; //
+        //finalResult[0] = newRecipe.();
+        //finalResult[1] = 
+        return finalResult;
+    }
+    
+    private static String getToString(String[] ingredients) {
+    	String output = "";
+    	for(String item : ingredients) {
+    		output += item + "\n";
+    	}
+    	
+    	return output;
     }
     
     private static String printNewRecipe(String[] newRecipe){
