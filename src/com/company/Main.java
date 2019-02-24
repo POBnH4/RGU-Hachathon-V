@@ -71,7 +71,7 @@ public class Main {
         for (int i = 0; i < newRecipe.length; i++) {
             if (!newRecipe[i].isEmpty()) {
                 newRecipe[i] = newRecipe[i].replace('*', ' ').trim();
-                String stepI = (i + 1) + ". " + newRecipe[i] + ".";
+                String stepI = (i + 1) + ". " + newRecipe[i] + ".\n";
                 System.out.println(stepI);
                 newRecipeSteps.append(stepI).append("\n");
             }
@@ -91,8 +91,9 @@ public class Main {
     }
 
     private static String getMax(HashMap<String, Integer> map) {
-        String recipeMax = "";
+        String recipeMax = ""; // recipe name with highest priority;
         int max = Integer.MIN_VALUE;
+        //TODO add additional data and check;
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             if (entry.getValue() > max) {
                 max = entry.getValue();
@@ -181,6 +182,8 @@ public class Main {
 
     private static void saveToDatabase(String recipeName, HashMap<String, String[]> mapWithDirectionAndIngredients) {
         cleanRecipes.put(recipeName, mapWithDirectionAndIngredients);
+        System.out.println("added to data base" + recipeName +
+                "\n " + Arrays.deepToString(new HashMap[]{mapWithDirectionAndIngredients}));
     }
 
     private static void printData() {
