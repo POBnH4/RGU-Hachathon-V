@@ -5,7 +5,8 @@ import java.awt.*;
 import static com.company.Main.callBackEnd;
 
 public class AppGUI extends JFrame{
-	private JTextField textBox, ingredients, directions;
+	private JTextField textBox;
+	private JTextArea ingredients, directions;
 	private JButton button;
 	
 	public void initGUI()
@@ -32,10 +33,30 @@ public class AppGUI extends JFrame{
         
         button = new JButton("Cook!");
         button.addActionListener(e -> {
+        	//clear text area
+        	ingredients.setText(null);
+        	ingredients.append("\n");
+        	directions.setText(null);
+        	directions.append("\n");
+        	
+        	//generate new text
             String input = textBox.getText();
             String[] output = callBackEnd(input);
-            directions.setText(output[0]); // get directions;
-            ingredients.setText(output[1]); // get ingredients
+            String[] temp1 = output[0].split(",");
+           
+            for (String step : temp1)
+            {
+            	directions.append(step + "\n");
+            }
+            
+            String[] temp2 = output[1].split(",");
+            for (String ingredient : temp2)
+            {
+            	ingredients.append("\t" + ingredient + "\n");
+            }
+            
+            //directions.setText(output[0]); // get directions;
+            //ingredients.setText(output[1]); // get ingredients
 
         });
         aPanel.add(button);
@@ -45,16 +66,18 @@ public class AppGUI extends JFrame{
         aPanel = new JPanel();
         aPanel.setLayout(new GridLayout(1, 2));// change panel layout to grid layout
         
-        ingredients = new JTextField("ingredients go here", 20);
-        ingredients.setHorizontalAlignment(JTextField.CENTER);
+        ingredients = new JTextArea();
+        //ingredients.setHorizontalAlignment(JTextField.CENTER);
         ingredients.setEditable(false);
         ingredients.setFont(new Font("SansSerif", Font.PLAIN, 24));;
         //System.out.println(ingredients.getFont());
         aPanel.add(ingredients);
         
-        directions = new JTextField("directions go here", 20);
-        directions.setHorizontalAlignment(JTextField.CENTER);
-        directions.setFont(new Font("SansSerif", Font.PLAIN, 24));;
+        directions = new JTextArea();
+        //directions.setHorizontalAlignment(JTextField.CENTER);
+        directions.setLineWrap(true);
+        directions.setWrapStyleWord(true);
+        directions.setFont(new Font("SansSerif", Font.PLAIN, 20));;
         directions.setEditable(false);
         aPanel.add(directions);
         

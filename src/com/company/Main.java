@@ -8,18 +8,14 @@ import javax.swing.JFrame;
 
 public class Main {
 
-    //private static final String BASE_PATH = "C:\\Users\\Philip Tsvetanov\\Desktop\\recipe-ingredients-and-reviews\\";
-    private static final String BASE_PATH = "C:\\Users\\Peter Boncheff\\Desktop\\";
+    private static final String BASE_PATH = "C:\\Users\\Philip Tsvetanov\\Desktop\\recipe-ingredients-and-reviews\\";
+    //private static final String BASE_PATH = "C:\\Users\\Peter Boncheff\\Desktop\\";
     private static HashMap<String, HashMap<String, String[]>> cleanRecipes = new HashMap<>();
     // hashmap cleanRecipes - (String) recipe name, hashmap( (String)directions, String[ingredients]);
 
     public static void main(String[] args) {
-
-
         Runnable runGUI = () -> createAndShowGUI();
         java.awt.EventQueue.invokeLater(runGUI);
-
-
     }
 
     private static void createAndShowGUI() {
@@ -53,7 +49,7 @@ public class Main {
 
         final String[] finalResult = new String[2]; //0 -> for recipe directions, 1 -> for recipe ingredients;
         finalResult[0] = recipe;
-        finalResult[1] = inputString;
+        finalResult[1] = inputString.replaceAll("\\s+","");
         return finalResult;
     }
 
