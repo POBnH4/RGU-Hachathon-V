@@ -4,13 +4,28 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+import javax.swing.JFrame;
+
 public class Main {
 
-    private static final String BASE_PATH = "C:\\Users\\Peter Boncheff\\Desktop\\";
+    private static final String BASE_PATH = "C:\\Users\\Philip Tsvetanov\\Desktop\\recipe-ingredients-and-reviews\\";
+    //private static final String BASE_PATH = "C:\\Users\\Peter Boncheff\\Desktop\\";
     private static HashMap<String, HashMap<String, String[]>> cleanRecipes = new HashMap<>();
     // hashmap cleanRecipes - (String) recipe name, hashmap( (String)directions, String[ingredients]);
 
     public static void main(String[] args) {
+
+
+    	Runnable runGUI = new Runnable()
+    	{
+    	      @Override
+    	      public void run()
+    	      {
+    	           createAndShowGUI();
+    	      }
+    	};
+    	java.awt.EventQueue.invokeLater(runGUI);
+
         //Heap maxHeap = new Heap(4);
         //maxHeap.print();
         loadDataCleanRecipes();
@@ -31,7 +46,14 @@ public class Main {
         saveToDatabase("",newRecipe); //TODO ask user for name;
     }
 
-
+    private static void createAndShowGUI()
+    {
+        AppGUI f = new AppGUI();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.initGUI(); // initialise AdminGUI
+        f.setVisible(true); // make frame visible
+    }
+    
     private static String printNewRecipe(String[] newRecipe){
         StringBuilder newRecipeSteps = new StringBuilder();
         for(int i = 0; i < newRecipe.length; i++){
