@@ -8,78 +8,69 @@ import javax.swing.JFrame;
 
 public class Main {
 
-    private static final String BASE_PATH = "C:\\Users\\Philip Tsvetanov\\Desktop\\recipe-ingredients-and-reviews\\";
-    //private static final String BASE_PATH = "C:\\Users\\Peter Boncheff\\Desktop\\";
+    //private static final String BASE_PATH = "C:\\Users\\Philip Tsvetanov\\Desktop\\recipe-ingredients-and-reviews\\";
+    private static final String BASE_PATH = "C:\\Users\\Peter Boncheff\\Desktop\\";
     private static HashMap<String, HashMap<String, String[]>> cleanRecipes = new HashMap<>();
     // hashmap cleanRecipes - (String) recipe name, hashmap( (String)directions, String[ingredients]);
 
     public static void main(String[] args) {
 
 
-    	Runnable runGUI = new Runnable()
-    	{
-    	      @Override
-    	      public void run()
-    	      {
-    	           createAndShowGUI();
-    	      }
-    	};
-    	java.awt.EventQueue.invokeLater(runGUI);
+        Runnable runGUI = () -> createAndShowGUI();
+        java.awt.EventQueue.invokeLater(runGUI);
 
-        
+
     }
 
-    private static void createAndShowGUI()
-    {
+    private static void createAndShowGUI() {
         AppGUI f = new AppGUI();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.initGUI(); // initialise AdminGUI
         f.setVisible(true); // make frame visible
     }
-    
-    private static String[] callBackEnd(String inputString)
-    {
-    	//Heap maxHeap = new Heap(4);
+
+    // red cabbage, carrot, tomato, red onion
+    static String[] callBackEnd(String inputString) {
+        //Heap maxHeap = new Heap(4);
         //maxHeap.print();
         loadDataCleanRecipes();
         //printData();
         String[] temp = inputString.split(",");
         List<String> userInput = new ArrayList<>(Arrays.asList(temp));
-        String[] uInput = (String[]) userInput.toArray();
-        //userInput.add("red cabbage");
-        //userInput.add("carrot");
-        //userInput.add("tomato");
-        //userInput.add("red onion");
+        String[] uInput = new String[0];
+        try {
+            uInput = (String[]) userInput.toArray();
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
         String[] optimized = optimize(checkForOccurrences(userInput), userInput);
         //printTwo(checkForOccurrences(list));
-        HashMap<String,String[]> newRecipe = new HashMap<>();
-        String y = printNewRecipe(optimized);
-        try {
-            newRecipe.put(y, uInput);
-            saveToDatabase("",newRecipe); //TODO ask user for name; 
-        }catch (ClassCastException e){
-           // e.printStackTrace();
-        }
-        final String[] finalResult = new String[2]; //
-        //finalResult[0] = newRecipe.();
-        //finalResult[1] = 
+        HashMap<String, String[]> newRecipe = new HashMap<>();
+        String recipe = printNewRecipe(optimized);
+
+        newRecipe.put(recipe, uInput);
+        saveToDatabase("", newRecipe); //TODO ask user for name;
+
+        final String[] finalResult = new String[2]; //0 -> for recipe directions, 1 -> for recipe ingredients;
+        finalResult[0] = recipe;
+        finalResult[1] = inputString;
         return finalResult;
     }
-    
+
     private static String getToString(String[] ingredients) {
-    	String output = "";
-    	for(String item : ingredients) {
-    		output += item + "\n";
-    	}
-    	
-    	return output;
+        String output = "";
+        for (String item : ingredients) {
+            output += item + "\n";
+        }
+
+        return output;
     }
-    
-    private static String printNewRecipe(String[] newRecipe){
+
+    private static String printNewRecipe(String[] newRecipe) {
         StringBuilder newRecipeSteps = new StringBuilder();
-        for(int i = 0; i < newRecipe.length; i++){
-            if(!newRecipe[i].isEmpty()) {
-                newRecipe[i] = newRecipe[i].replace('*',' ').trim();
+        for (int i = 0; i < newRecipe.length; i++) {
+            if (!newRecipe[i].isEmpty()) {
+                newRecipe[i] = newRecipe[i].replace('*', ' ').trim();
                 String stepI = (i + 1) + ". " + newRecipe[i] + ".";
                 System.out.println(stepI);
                 newRecipeSteps.append(stepI).append("\n");
@@ -88,22 +79,22 @@ public class Main {
         return newRecipeSteps.toString();
     }
 
-    private static String[] optimize(HashMap<String, Integer> map, List<String> userInput){
+    private static String[] optimize(HashMap<String, Integer> map, List<String> userInput) {
         //Heap heap = new Heap(map.size());
         final int DOUBLE = 2;
         String[] newRecipe = new String[userInput.size() * DOUBLE];
-        for(int i = 0; i < newRecipe.length; i++){
+        for (int i = 0; i < newRecipe.length; i++) {
             String step = getMax(map);
             newRecipe[i] = step;
         }
         return newRecipe;
     }
 
-    private static String getMax (HashMap<String, Integer> map){
+    private static String getMax(HashMap<String, Integer> map) {
         String recipeMax = "";
         int max = Integer.MIN_VALUE;
-        for(Map.Entry<String,Integer> entry : map.entrySet()){
-            if(entry.getValue() > max){
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (entry.getValue() > max) {
                 max = entry.getValue();
                 recipeMax = entry.getKey();
             }
@@ -126,20 +117,20 @@ public class Main {
                 String data = scanner.nextLine(), output = "";
                 String recipeName = "", ingredient = "", directions = "";
                 int semicolonCounter = 0; //used to determine the columns of the dataset;
-                for (int i = 0; i < data.length(); i++){
-                   output += data.charAt(i);
-                   if(data.charAt(i) == ';'){
-                       semicolonCounter++;
-                       if(semicolonCounter == GET_RECIPE_NAME) recipeName = output;
-                       if(semicolonCounter == GET_INGREDIENTS) ingredient = output;
-                       if(semicolonCounter == GET_DIRECTIONS) directions = output;
-                       output = "";
-                   }
+                for (int i = 0; i < data.length(); i++) {
+                    output += data.charAt(i);
+                    if (data.charAt(i) == ';') {
+                        semicolonCounter++;
+                        if (semicolonCounter == GET_RECIPE_NAME) recipeName = output;
+                        if (semicolonCounter == GET_INGREDIENTS) ingredient = output;
+                        if (semicolonCounter == GET_DIRECTIONS) directions = output;
+                        output = "";
+                    }
                 }
                 final String[] INGREDIENTS = ingredient.split(",");
                 final HashMap<String, String[]> DIRECTION_AND_INGREDIENTS = new HashMap<>();
-                DIRECTION_AND_INGREDIENTS.put(directions,INGREDIENTS);
-                cleanRecipes.put(recipeName,DIRECTION_AND_INGREDIENTS);
+                DIRECTION_AND_INGREDIENTS.put(directions, INGREDIENTS);
+                cleanRecipes.put(recipeName, DIRECTION_AND_INGREDIENTS);
             }
             scanner.close();
             System.out.println("\n\n\n\n\n\n");
@@ -149,21 +140,21 @@ public class Main {
 
     }
 
-    private static HashMap<String, Integer> checkForOccurrences(List<String> userInput){
+    private static HashMap<String, Integer> checkForOccurrences(List<String> userInput) {
         HashMap<String, Integer> occurrences = new HashMap<>(); //int is for number of
 
         // ingredients that are the same as the ones the user has;
-        for(Map.Entry<String,HashMap<String,String[]>> entry : cleanRecipes.entrySet()){
-            for(Map.Entry<String,String[]> inner : entry.getValue().entrySet()){
+        for (Map.Entry<String, HashMap<String, String[]>> entry : cleanRecipes.entrySet()) {
+            for (Map.Entry<String, String[]> inner : entry.getValue().entrySet()) {
                 boolean containsIngredients = false;
                 int occurrenceOfIngredientsCounter = 0;
-                for(int i = 0; i < inner.getValue().length; i++){
-                    if(userInput.contains(inner.getValue()[i])){
+                for (int i = 0; i < inner.getValue().length; i++) {
+                    if (userInput.contains(inner.getValue()[i])) {
                         containsIngredients = true;
                         occurrenceOfIngredientsCounter++;
                     }
                 }
-                if(containsIngredients){
+                if (containsIngredients) {
                     String[] steps = inner.getKey().split("\\.");
                     ArrayList<String> list = new ArrayList<>(Arrays.asList(steps));
                     for (String sentence : list) {
@@ -178,7 +169,7 @@ public class Main {
                         }
                     }
                 }
-                if(containsIngredients && occurrences.isEmpty()){
+                if (containsIngredients && occurrences.isEmpty()) {
                     final String COULD_NOT_FIND = "Mix them together in a form of salad";
                     occurrences.put(COULD_NOT_FIND, occurrenceOfIngredientsCounter);
                 }
@@ -188,17 +179,17 @@ public class Main {
     }
 
 
-    private static void saveToDatabase(String recipeName, HashMap<String, String[]> mapWithDirectionAndIngredients){
+    private static void saveToDatabase(String recipeName, HashMap<String, String[]> mapWithDirectionAndIngredients) {
         cleanRecipes.put(recipeName, mapWithDirectionAndIngredients);
     }
 
-    private static void printData(){
-        for(Map.Entry<String,HashMap<String,String[]>> entry : cleanRecipes.entrySet()){
+    private static void printData() {
+        for (Map.Entry<String, HashMap<String, String[]>> entry : cleanRecipes.entrySet()) {
             System.out.println("Recipe name: " + entry.getKey());
-            for(Map.Entry<String,String[]> inner : entry.getValue().entrySet()){
+            for (Map.Entry<String, String[]> inner : entry.getValue().entrySet()) {
                 System.out.println("Recipe directions: " + inner.getKey());
                 System.out.println("Recipe ingredients: ");
-                for(int i = 0; i < inner.getValue().length; i++){
+                for (int i = 0; i < inner.getValue().length; i++) {
                     System.out.println(inner.getValue()[i]);
                 }
             }
@@ -207,8 +198,8 @@ public class Main {
     }
 
 
-    private static void printTwo(HashMap<String, Integer> map){
-        for(Map.Entry<String,Integer> entry : map.entrySet()){
+    private static void printTwo(HashMap<String, Integer> map) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
             System.out.println(entry.getKey());
         }
     }

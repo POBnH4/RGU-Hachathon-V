@@ -1,11 +1,8 @@
 package com.company;
-import java.awt.*;
-import java.awt.event.*;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import javax.swing.*;
+import java.awt.*;
+
+import static com.company.Main.callBackEnd;
 
 public class AppGUI extends JFrame{
 	private JTextField textBox, ingredients, directions;
@@ -34,14 +31,12 @@ public class AppGUI extends JFrame{
         aPanel.add(textBox);
         
         button = new JButton("Cook!");
-        button.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-            	String input = textBox.getText();
-            	System.out.println(input);
-            }
+        button.addActionListener(e -> {
+            String input = textBox.getText();
+            String[] output = callBackEnd(input);
+            directions.setText(output[0]); // get directions;
+            ingredients.setText(output[1]); // get ingredients
+
         });
         aPanel.add(button);
         
